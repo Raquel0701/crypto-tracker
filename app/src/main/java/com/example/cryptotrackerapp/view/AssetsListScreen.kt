@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,89 +28,74 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.cryptotrackerapp.model.Asset
+import com.example.cryptotrackerapp.viewmodel.AssetsViewModel
 
 @Composable
 
-fun AssetList(){
+fun AssetList(viewModel: AssetsViewModel) {
+    val assets = viewModel.assets
+    LaunchedEffect(Unit) {
+        viewModel.fetchAssets()
+    }
 
-    Column (
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-    ){
-        AssetRow(
-            Asset(
-                id = "15",
-                name = "BITCOIN 1",
-                symbol = "BTC",
-                price = 6000.4,
-                percentage = 80.75
-            )
-        )
-        Divider()
-        AssetRow(
-            Asset(
-                id = "15",
-                name = "BITCOIN 2",
-                symbol = "ETH",
-                price = 1000.4,
-                percentage = -50.5
-            )
-        )
-        Divider()
-        AssetRow(
-            Asset(
-                id = "15",
-                name = "BITCOIN 3",
-                symbol = "ETC",
-                price = 1000.4,
-                percentage = -50.5
-            )
-        )
+            .background(MaterialTheme.colorScheme.onBackground)
+    ) {
+        items(assets) { currentAsset ->
+            AssetRow(asset = currentAsset)
+        }
     }
 }
 
 @Composable
 
-fun AssetRow(asset: Asset){
-    Row(verticalAlignment = Alignment.CenterVertically,
+fun AssetRow(asset: Asset) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp)) {
-        Box(modifier = Modifier
-            .padding(15.dp)){
-        if (LocalInspectionMode.current){
-            Icon(
-                imageVector =  Icons.Filled.AccountCircle,
-                contentDescription = null,
-                tint=Color.LightGray,
-                modifier = Modifier
-                    .size(50.dp)
-            )
-        }else{
-            AsyncImage(
-                model = "https://assets.coincap.io/assets/icons/${asset.symbol.lowercase()}@2x.png",
-                contentDescription = null,
-            )
-        }
+            .padding(horizontal = 10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(15.dp)
+        ) {
+            if (LocalInspectionMode.current) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = null,
+                    tint = Color.LightGray,
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+            } else {
+                AsyncImage(
+                    model = "https://assets.coincap.io/assets/icons/${asset.symbol.lowercase()}@2x.png",
+                    contentDescription = null,
+                )
+            }
         }
 
 
 
         Column {
-            Text(text=asset.name, fontSize = 16.sp)
-            Text(text=asset.symbol, fontSize = 12.sp)
+            Text(text = asset.name, fontSize = 16.sp)
+            Text(text = asset.symbol, fontSize = 12.sp)
 
         }
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = "${asset.price}",
+        Text(
+            text = "${asset.price}",
             fontSize = 16.sp,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
         )
-        Text(text = "${asset.percentage}",
+        Text(
+            text = "${asset.percentage}",
             fontSize = 16.sp,
-            color = if(asset.percentage>=0)  Color.Green else Color.Red
-            ,
+            color = if (asset.percentage >= 0) Color.Green else Color.Red,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
 
@@ -118,6 +107,6 @@ fun AssetRow(asset: Asset){
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 
-fun AssetRowPreview(){
-    AssetList()
+fun AssetRowPreview() {
+    AssetList(AssetsViewModel())
 }

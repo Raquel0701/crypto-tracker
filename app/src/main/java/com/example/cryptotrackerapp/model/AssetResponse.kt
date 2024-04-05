@@ -1,4 +1,12 @@
 package com.example.cryptotrackerapp.model
 
-class AssetResponse {
-}
+data class AssetResponse (
+    val id:String,
+    var name: String,
+    val symbol: String,
+    var priceUsd: String,
+    var changePercent24Hr: String
+
+)
+
+
