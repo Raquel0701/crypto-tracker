@@ -67,8 +67,12 @@ dependencies {
 
     //Lamada API
     implementation("com.squareup.retrofit2:retrofit:2.10.0")
+
+    //Transformar json a object
     implementation("com.squareup.retrofit2:converter-gson:2.10.0")
 
+    //Navegación
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
